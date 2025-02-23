@@ -457,7 +457,8 @@ class GCG:
 
             del output
             gc.collect()
-            torch.cuda.empty_cache()
+            with torch.device('cuda'):
+                torch.cuda.empty_cache()
 
         return optim_ids_onehot_grad
 
@@ -518,7 +519,8 @@ class GCG:
 
                 del outputs
                 gc.collect()
-                torch.cuda.empty_cache()
+                with torch.device('cuda'):
+                    torch.cuda.empty_cache()
 
         return torch.cat(all_loss, dim=0)
 

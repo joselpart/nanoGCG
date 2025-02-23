@@ -88,7 +88,8 @@ def find_executable_batch_size(function: callable = None, starting_batch_size: i
     def decorator(*args, **kwargs):
         nonlocal batch_size
         gc.collect()
-        torch.cuda.empty_cache()
+        with torch.device('cuda'):
+            torch.cuda.empty_cache()
         params = list(inspect.signature(function).parameters.keys())
         # Guard against user error
         if len(params) < (len(args) + 1):
@@ -105,7 +106,8 @@ def find_executable_batch_size(function: callable = None, starting_batch_size: i
             except Exception as e:
                 if should_reduce_batch_size(e):
                     gc.collect()
-                    torch.cuda.empty_cache()
+                    with torch.device('cuda'):
+                        torch.cuda.empty_cache()
                     batch_size //= 2
                     print(f"Decreasing batch size to: {batch_size}")
                 else:
